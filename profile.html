@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профіль користувача</title>
+    <link rel="stylesheet" href="Css/profile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <h1>Мій профіль</h1>
+        
+        <!-- Фото профілю -->
+        <div class="profile-pic">
+            <img id="profile-image" src="default.png" alt="Фото профілю">
+        </div>
+
+        <!-- Інформація про користувача -->
+        <p id="username">Ім'я користувача: <span>Гість</span></p>
+        <p id="quests-completed">Пройдено квестів: <span>0</span></p>
+
+        <!-- Завантаження фото профілю -->
+        <input type="file" id="upload-profile-pic" accept="image/*" hidden>
+        <button class="upload-btn" onclick="document.getElementById('upload-profile-pic').click();">Завантажити фото</button>
+        <button class="backToTestBtn">Повернутись до тестів!</button>
+    </div>
+
+    <script src="Js/profile.js"></script>
+</body>
+</html>
