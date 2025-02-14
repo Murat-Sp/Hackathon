@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Реєстрація</title>
+    <title>Вхід</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
-        <h1>Реєстрація</h1>
+        <h1>Вхід</h1>
     </header>
-    
+
     <main>
-        <form class="register-form" action="/submit" method="post">
-            <label>User name</label>
-            <input id="InputUserName" type="text" name="UserName" required>
+         <form class="register-form" action="/check_users" method="post">
             <label>Email:</label>
-            <input id="InputEmail" type="text" name="Email" required>
+            <input  type="text" name="Email" required>
             <label>Пароль:</label>
-            <input id="InputPassword" type="password" name="Pass" required>
-            <button id="SignUp" type="submit">Зареєструватися</button>
+            <input  type="password" name="Pass" required>
+            <button  type="submit">Увійти</button>
         </form>
-        
+
     </main>
 
     <footer>

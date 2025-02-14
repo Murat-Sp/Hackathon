@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профіль користувача</title>
-    <link rel="stylesheet" href="Css/profile.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
 </head>
 <body>
     <div class="profile-container">
@@ -16,7 +16,8 @@
         </div>
 
         <!-- Інформація про користувача -->
-        <p id="username">Ім'я користувача: <span>Гість</span></p>
+        <p id="username">Ім'я користувача: <span>{% if name %} {{name}}
+  {% endif %}</span></p>
         <p id="quests-completed">Пройдено квестів: <span>0</span></p>
 
         <!-- Завантаження фото профілю -->
@@ -24,7 +25,6 @@
         <button class="upload-btn" onclick="document.getElementById('upload-profile-pic').click();">Завантажити фото</button>
         <button class="backToTestBtn">Повернутись до тестів!</button>
     </div>
-
     <script src="Js/profile.js"></script>
 </body>
 </html>

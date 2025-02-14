@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Віртуальні Квести</title>
-    <link rel="stylesheet" href="Css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <header>
         <h1>Віртуальні Квести</h1>
         <nav>
-            <a href="register.html">Увійти</a>
+            <a href="{{ url_for('register') }}">Увійти</a>
         </nav>
     </header>
     
