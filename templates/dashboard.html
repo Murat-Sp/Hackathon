@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель користувача</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'Css/style.css')}}">
+</head>
+<body>
+    <header>
+        <h1>Панель користувача</h1>
+    </header>
+    
+    <main>
+        <div class="profile-icon" onclick="window.location.href='profile'">
+            <img id="profile-pic" src="default.png" alt="Профіль">
+        </div>
+    
+
+        <button onclick="location.href='create-quest'">Створити квест</button>
+
+        <p>Доступні Квести:</p>
+        <div id="quests">
+            <div id="quest">
+                <p>Назва квесту</p>
+                <button id="startBtn">Розпочати тест</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Віртуальні Квести</p>
+    </footer>
+    <script src="{{ url_for('static', filename = 'Js/dashboard.js')}}"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'Css/style.css')}}">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <form >
+            <label id="task-fill-label">Питання</label>
+            <input type="text">
+            <label >Можливі Відповіді:</label>
+            <input id="InputAnswerS" type="text">
+            <button id="btnAddTask">Add</button>
+            <ul id="UlTask">
+                
+            </ul>
+
+            <label >Додати фото чи відео</label>
+            <div class="file-input-container">
+                <input id="inpFile" type="file" accept="image/*,video/*">
+                <label for="inpFile" class="custom-button">Вибрати файл</label>
+            </div>
+            <button id="btnSaveAll">Зберегти все</button>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename = 'Js/task-fill.js')}}"></script>
+</body>
+</html>

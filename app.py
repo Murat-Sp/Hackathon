@@ -1,8 +1,8 @@
-from flask import Flask, request, render_template
+from flask import Flask, redirect, url_for, request, render_template
 import mysql.connector
 from mysql.connector import Error
 
-app = Flask(__name__, template_folder=r"C:\Users\Admin\PycharmProjects\PythonProject\templates")
+app = Flask(__name__)
 def get_connection():
     try:
         connection = mysql.connector.connect(
@@ -24,9 +24,11 @@ def get_connection():
 @app.route('/')
 def home():
     return render_template("index.html")
+
 @app.route('/register')
 def register():
     return render_template('register.html')
+
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form.get('UserName')
@@ -51,6 +53,7 @@ def submit():
         if connection.is_connected():
             connection.close()
             print("З'єднання з MySQL закрито.")
+            
 @app.route('/check_users', methods=['POST'])
 def check_users():
     email = request.form.get('Email')
@@ -82,6 +85,34 @@ def check_users():
     except mysql.connector.Error as e:
         print(f"Помилка бази даних: {e}")
         return "Помилка сервера.", 500
+    
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+@app.route("/predStart")
+def predStart():
+    return render_template("predStart.html")
+
+@app.route('/create-quest')
+def create_quest():
+    return render_template("create-quest.html")
+
+@app.route('/task-fill')
+def task_fill():
+    return render_template('task-fill.html')
+
+@app.route('/quest')
+def quest():
+    return render_template("quest.html")
+
+@app.route("/result")
+def result():
+    return render_template("result.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
