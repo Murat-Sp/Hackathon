@@ -1,16 +1,18 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, flash, session
 import mysql.connector
 from mysql.connector import Error
 
 app = Flask(__name__)
+app.secret_key = "hello"
+
 def get_connection():
     try:
         connection = mysql.connector.connect(
             host='localhost',
             port=3306,
             user='root',
-            password='root',
-            database='projectX'
+            password='password',
+            database='projectx'
         )
         if connection.is_connected():
             print("З'єднання з MySQL успішно встановлено.")
@@ -25,6 +27,11 @@ def get_connection():
 def home():
     return render_template("index.html")
 
+@app.route('/login')
+def login():
+
+    return render_template('login.html')
+
 @app.route('/register')
 def register():
     return render_template('register.html')
@@ -34,21 +41,37 @@ def submit():
     name = request.form.get('UserName')
     email = request.form.get('Email')
     password = request.form.get('Pass')
+
     connection = get_connection()
+
     if connection is None:
         return "Помилка з'єднання з базою даних.", 500
 
     try:
         cursor = connection.cursor()
+
+        # Перевіряємо, чи є користувачі з введеним email у базі даних
+        sql_query = "SELECT COUNT(*) FROM users WHERE email = %s"
+        cursor.execute(sql_query, [email])
+        emailCount = int(cursor.fetchone()[0])
+
+        # Якщо користувач з такою поштою існує, створюємо повідомлення та перенаправляємо на register
+        if(emailCount > 0):
+            flash("Електронна адреса вже зареєстрована!", "error")
+            return redirect(url_for("register"))
+        
         sql_query = "INSERT INTO `users` (username, email, password) VALUES (%s, %s, %s)"
         cursor.execute(sql_query, (name, email, password))
+
         connection.commit()
         cursor.close()
 
         return render_template('login.html')
+    
     except Error as e:
         print(f"Помилка виконання SQL-запиту: {e}")
         return "Помилка виконання запиту.", 500
+    
     finally:
         if connection.is_connected():
             connection.close()
@@ -56,31 +79,34 @@ def submit():
             
 @app.route('/check_users', methods=['POST'])
 def check_users():
+
     email = request.form.get('Email')
     password = request.form.get('Pass')
 
     if not email or not password:
         return "Будь ласка, введіть email і пароль.", 400
+    
     try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            port=3306,
-            user='root',
-            password='root',
-            database='projectX'
-        )
+
+        connection = get_connection()
+
         cursor = connection.cursor()
+
         sql_query = "SELECT * FROM users WHERE email = %s AND password = %s "
+
         cursor.execute(sql_query, (email, password))
-        data = cursor.fetchall()
+        data = cursor.fetchone()
+
         cursor.close()
         connection.close()
-        for i in data:
-         if email == i[1] and password == i[2]:
-          if not data:
-            return "Користувач не знайдений або неправильний пароль.", 404
-        name = i[1]
-        return render_template('profile.html', name=name)
+
+        if data:
+            session["user"] = data
+            return redirect(url_for("profile"))
+        
+        else:
+            flash("Неправильний логін або пароль!", "info")
+            return redirect(url_for("login"))
 
     except mysql.connector.Error as e:
         print(f"Помилка бази даних: {e}")
@@ -92,7 +118,12 @@ def dashboard():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    if "user" in session:
+        username = session["user"][1]
+        return render_template('profile.html', name = username)
+    else:
+        flash("Ви не ввійшли в профіль!", "error")
+        return render_template("login.html")
 
 @app.route("/predStart")
 def predStart():

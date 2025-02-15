@@ -12,14 +12,24 @@
     </header>
     
     <main>
+        
         <form class="register-form" action="/submit" method="post">
-            <label>User name</label>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <label>Username</label>
             <input id="InputUserName" type="text" name="UserName" required>
             <label>Email:</label>
             <input id="InputEmail" type="text" name="Email" required>
             <label>Пароль:</label>
             <input id="InputPassword" type="password" name="Pass" required>
-            <button id="SignUp" type="submit">Зареєструватися</button>
+            <button id="SignUp" type="submit">Зареєструватись</button>
         </form>
         
     </main>
