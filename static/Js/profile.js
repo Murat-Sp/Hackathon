@@ -1,15 +1,19 @@
 const backToTestBtn = document.querySelector('.backToTestBtn');
 
-document.getElementById("upload-profile-pic").addEventListener("change", function(event) {
-    let file = event.target.files[0];
-    if (file) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("profile-image").src = e.target.result;
-            localStorage.setItem("profileImage", e.target.result); // Збереження у браузері
-        };
-        reader.readAsDataURL(file);
-    }
+document.getElementById("upload-profile-pic").addEventListener("change", async function (event) {
+    event.preventDefault(); // Запобігаємо перезавантаженню сторінки
+
+    let fileInput = document.getElementById("upload-profile-pic").files[0];
+    let formData = new FormData();
+    formData.append("file", fileInput);
+
+    let response = await fetch("/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    let result = await response.text();
+    console.log(result);
 });
 
 // Перевіряємо, чи є збережене фото

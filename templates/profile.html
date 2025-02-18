@@ -12,11 +12,11 @@
         
         <!-- Фото профілю -->
         <div class="profile-pic">
-            <img id="profile-image" src="default.png" alt="Фото профілю">
+            <img id="profile-image" src="{% if userPic %} {{userPic}} {% else %} static\images\profile_pictures\default.png {% endif %}" alt="Фото профілю">
         </div>
 
         <!-- Інформація про користувача -->
-        <p id="username">Ім'я користувача: <span>{% if name %} {{name}}
+        <p id="username"><span>{% if name %} {{name}}
   {% endif %}</span></p>
         <p id="quests-completed">Пройдено квестів: <span>0</span></p>
 

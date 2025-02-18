@@ -1,6 +1,9 @@
-from flask import Flask, redirect, url_for, request, render_template, flash, session
+from flask import Flask, redirect, url_for, request, render_template, flash, session, jsonify
 import mysql.connector
 from mysql.connector import Error
+import os
+from werkzeug.utils import secure_filename
+import re
 
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -76,6 +79,7 @@ def submit():
         if connection.is_connected():
             connection.close()
             print("З'єднання з MySQL закрито.")
+
             
 @app.route('/check_users', methods=['POST'])
 def check_users():
@@ -89,11 +93,9 @@ def check_users():
     try:
 
         connection = get_connection()
-
         cursor = connection.cursor()
 
         sql_query = "SELECT * FROM users WHERE email = %s AND password = %s "
-
         cursor.execute(sql_query, (email, password))
         data = cursor.fetchone()
 
@@ -101,7 +103,7 @@ def check_users():
         connection.close()
 
         if data:
-            session["user"] = data
+            session["user"] = list(data)
             return redirect(url_for("profile"))
         
         else:
@@ -114,16 +116,63 @@ def check_users():
     
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    userPic = None
+    if("user" in session):
+        userPic = session["user"][4]
+    return render_template("dashboard.html", userPic = userPic)
 
 @app.route('/profile')
 def profile():
     if "user" in session:
+
         username = session["user"][1]
-        return render_template('profile.html', name = username)
+        userPicture = session["user"][4]
+
+        return render_template('profile.html', userPic = userPicture, name = username)
+    
     else:
         flash("Ви не ввійшли в профіль!", "error")
         return render_template("login.html")
+
+@app.route('/upload', methods = ['POST'])
+def upload():
+
+    if "file" not in request.files:
+        return jsonify({"message": "Файл не знайдено"}), 400
+    file = request.files["file"]
+
+    if(file.filename == ""):
+        return jsonify({"message": "Файл не обрано"}), 400
+    
+    if(session["user"][4] != None):
+        os.remove(session["user"][4])
+
+    filename = secure_filename(str(session["user"][0]) + "." + file.filename.split('.')[-1])
+    filepath = os.path.join("static/images/profile_pictures", filename)
+    file.save(filepath)
+
+    try:
+
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        sql_query = "UPDATE `users` SET img = %s WHERE id = %s"
+        cursor.execute(sql_query, (filepath, session["user"][0]))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+    except mysql.connector.Error as e:
+        print(f"Помилка бази даних: {e}")
+        return "Помилка сервера.", 500
+    
+    session["user"][4] = os.path.relpath(filepath)
+
+    session.modified = True
+
+    return jsonify({"message": "Файл завантажено"})
+
 
 @app.route("/predStart")
 def predStart():
